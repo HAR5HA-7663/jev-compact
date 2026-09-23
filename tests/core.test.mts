@@ -34,7 +34,7 @@ test('noise stripping keeps the user words', () => {
 });
 
 test('masking', () => {
-  const m = mask('Authorization: Bearer abcdefghijklmnop123 and TYPESAFE_API_KEY=apikey_293b3687958419442609abcd12 postgres://u:hunter2secret@h/db');
+  const m = mask('Authorization: Bearer abcdefghijklmnop123 and TYPESAFE_API_KEY=apikey_0000fake0000fake0000fake00 postgres://u:hunter2secret@h/db');
   assert.ok(!m.includes('abcdefghijklmnop123') && !m.includes('293b3687') && !m.includes('hunter2secret'));
 });
 
