@@ -1,0 +1,57 @@
+{
+  "name": "jev-compact",
+  "version": "0.1.0",
+  "description": "Context compaction that prunes instead of summarising: rules drop exploration output and hook noise locally, Jev ranks the rest against a budget, a note says what was removed, and removed outputs are archived for the brain. Falls back to the built-in summary when it cannot do better.",
+  "license": "MIT",
+  "userConfig": {
+    "targetPercent": {
+      "type": "number",
+      "title": "Target context share",
+      "description": "Prune down to this percentage of the context window (estimated).",
+      "default": 45
+    },
+    "compactAtPercent": {
+      "type": "number",
+      "title": "Auto-compact at",
+      "description": "Context percentage at which a finished turn triggers compaction.",
+      "default": 75
+    },
+    "preserveRecentMessages": {
+      "type": "number",
+      "title": "Recent messages to preserve",
+      "description": "Newest messages never touched.",
+      "default": 12
+    },
+    "minReductionRatio": {
+      "type": "number",
+      "title": "Minimum reduction",
+      "description": "Below this estimated reduction the built-in summary runs instead.",
+      "default": 0.25
+    },
+    "model": {
+      "type": "string",
+      "title": "Jev model",
+      "description": "Pinned TypeSafe model name.",
+      "default": "jev-1.13.0"
+    },
+    "brainArchive": {
+      "type": "boolean",
+      "title": "Archive pruned outputs",
+      "description": "Write removed tool outputs to ~/brain/archive/compaction/ for the daily brain sync.",
+      "default": true
+    }
+  },
+  "author": {
+    "name": "Harsha Yellela",
+    "url": "https://github.com/HAR5HA-7663"
+  },
+  "repository": "https://github.com/HAR5HA-7663/jev-compact",
+  "keywords": [
+    "claude-code",
+    "compaction",
+    "context",
+    "jev",
+    "typesafe",
+    "hooks"
+  ]
+}

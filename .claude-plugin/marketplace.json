@@ -1,0 +1,17 @@
+{
+  "name": "jev-compact",
+  "owner": {
+    "name": "HAR5HA-7663",
+    "url": "https://github.com/HAR5HA-7663"
+  },
+  "plugins": [
+    {
+      "name": "jev-compact",
+      "source": "./",
+      "description": "Prune-not-summarise context compaction for Claude Code, guided by Jev.",
+      "version": "0.1.0",
+      "license": "MIT"
+    }
+  ],
+  "description": "jev-compact: prune-not-summarise context compaction for Claude Code."
+}
