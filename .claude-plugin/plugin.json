@@ -1,6 +1,6 @@
 {
   "name": "jev-compact",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Context compaction that prunes instead of summarising: rules drop exploration output and hook noise locally, Jev ranks the rest against a budget, a note says what was removed, and removed outputs are archived for the brain. Falls back to the built-in summary when it cannot do better.",
   "license": "MIT",
   "userConfig": {

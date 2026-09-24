@@ -9,7 +9,7 @@
       "name": "jev-compact",
       "source": "./",
       "description": "Prune-not-summarise context compaction for Claude Code, guided by Jev.",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "license": "MIT"
     }
   ],
