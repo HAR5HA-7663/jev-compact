@@ -1,0 +1,17 @@
+{
+  "name": "jev-compact-trigger",
+  "version": "0.1.1",
+  "description": "Companion to jev-compact: watches context use after every turn and starts a compaction at the configured percentage. Separate plugin on purpose — the engine skips a plugin's own session.compact hook when that plugin raises the compaction, so the trigger must come from outside jev-compact for the pruning to run.",
+  "author": { "name": "Harsha Yellela", "url": "https://github.com/HAR5HA-7663" },
+  "repository": "https://github.com/HAR5HA-7663/jev-compact",
+  "license": "MIT",
+  "keywords": ["claude-code", "compaction", "context", "jev"],
+  "userConfig": {
+    "compactAtPercent": {
+      "type": "number",
+      "title": "Auto-compact at",
+      "description": "Context percentage at which a finished turn triggers compaction. jev-compact's own compactAtPercent wins when set.",
+      "default": 75
+    }
+  }
+}

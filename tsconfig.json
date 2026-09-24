@@ -1,10 +1,25 @@
 {
   "compilerOptions": {
-    "target": "es2023", "lib": ["es2023"], "types": [],
-    "module": "esnext", "moduleResolution": "bundler",
-    "strict": true, "noUncheckedIndexedAccess": true,
-    "noEmit": true, "skipLibCheck": true, "allowImportingTsExtensions": true,
-    "jsx": "react", "jsxFactory": "h", "jsxFragmentFactory": "Fragment"
+    "target": "es2023",
+    "lib": [
+      "es2023"
+    ],
+    "types": [],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "allowImportingTsExtensions": true,
+    "jsx": "react",
+    "jsxFactory": "h",
+    "jsxFragmentFactory": "Fragment"
   },
-  "include": ["types", "hooks", "src"]
+  "include": [
+    "types",
+    "hooks",
+    "src",
+    "trigger/hooks"
+  ]
 }

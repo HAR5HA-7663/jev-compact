@@ -100,7 +100,6 @@ function summary(r: Result): string {
 
 export const register: Register = (on: On, options: PluginOptions) => {
   const cfg = resolveConfig(options);
-  let compacting = false;
 
   on('session.compact', async ($: any, event: any, next: any) => {
     if (event.trigger === 'precompute') return next(event);
@@ -136,32 +135,8 @@ export const register: Register = (on: On, options: PluginOptions) => {
     }
   });
 
-  on('turn.complete', async ($: any, event: any, next: any) => {
-    try {
-      const { context } = await $.session.usage();
-      const pct = context?.percent ?? 0;
-      if (await $.env.get('JEV_COMPACT_DEBUG')) await appendLog($, `turn ${event.reason} ${pct}% of ${context?.window ?? '?'} (threshold ${cfg.compactAtPercent}%)`);
-      if (!compacting && event.reason === 'answer' && pct >= cfg.compactAtPercent) {
-        compacting = true;
-        // $.session.compact() rejects while a turn runs, and turn.complete still sits inside the
-        // turn, so the call is deferred to a timer that fires once the session is idle. If a new
-        // turn has started by then it rejects, is logged, and the next turn.complete tries again.
-        $.clock.after(1000, () => {
-          void (async () => {
-            try {
-              const r = await $.session.compact();
-              await appendLog($, `auto ${pct}% >= ${cfg.compactAtPercent}% -> ${r && typeof r === 'object' && 'skip' in r ? `skipped (${(r as { skip: string }).skip})` : 'compacted'}`);
-            } catch (error) {
-              await appendLog($, `auto ${pct}% failed: ${mask(error instanceof Error ? error.message : String(error))}`);
-            } finally {
-              compacting = false;
-            }
-          })();
-        });
-      }
-    } catch (error) {
-      await appendLog($, `auto-compact check failed: ${mask(error instanceof Error ? error.message : String(error))}`);
-    }
-    return next(event);
-  });
+  // The automatic trigger lives in the companion plugin `jev-compact-trigger` (trigger/): the
+  // engine skips a plugin's own session.compact hook when that plugin raised the compaction, so
+  // a $.session.compact() from here would run the built-in summary instead of the pruning above.
+  // `compactAtPercent` stays in this plugin's config; the trigger reads it through $.config.list().
 };

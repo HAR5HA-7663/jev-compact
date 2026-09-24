@@ -10,16 +10,23 @@ The built-in `/compact` asks the model to rewrite your whole conversation as a s
 4. **A note tells the assistant what was removed** so it re-runs a tool instead of guessing from memory, and the removed outputs are archived to `~/brain/archive/compaction/` (optional).
 5. **Falls back** to the built-in summary — on the pruned set — whenever pruning alone cannot reach the budget or anything errors. You never get a worse outcome than today.
 
-On a real 100k-token Claude Code window: **54 % smaller in 19 ms**, no Jev call needed. On a 35k window: 37 % from rules, then the built-in summary handles the rest.
+On a real 100k-token Claude Code window: **54 % smaller in 19 ms**, no Jev call needed. On a 35k window: 37 % from rules, then the built-in summary handles the rest. First live compaction on a 270k-token session: 55 % smaller (270k → 121k), 164 exploration outputs pruned, 19 error/test outputs kept, zero Jev calls.
 
 ## Install
 
-Requires Claude Code ≥ 2.1.274 with function hooks enabled (`CLAUDE_CODE_ENABLE_FUNCTION_HOOKS=1`) and a TypeSafe API key.
+Requires Claude Code ≥ 2.1.274 with function hooks enabled and a TypeSafe API key. Enable function hooks for every launcher (terminal, desktop app, `claude agents` daemon) by putting the flag in `~/.claude/settings.json` rather than in your shell:
+
+```json
+{ "env": { "CLAUDE_CODE_ENABLE_FUNCTION_HOOKS": "1" } }
+```
 
 ```sh
 claude plugin marketplace add HAR5HA-7663/jev-compact
 claude plugin install jev-compact@jev-compact
+claude plugin install jev-compact-trigger@jev-compact
 ```
+
+**Two plugins, one feature.** `jev-compact` holds the `session.compact` hook (the pruning). `jev-compact-trigger` watches context use after every turn and starts a compaction at `compactAtPercent`. They are separate because the engine skips a plugin's *own* `session.compact` hook when that plugin raises the compaction — a trigger inside `jev-compact` would only ever get the built-in summary. Sessions already running when you install do not pick the plugins up; restart them.
 
 The key is read from `TYPESAFE_API_KEY` in the environment, else from a `TYPESAFE_API_KEY=` line in `~/.env`. Without a key the rule-based pruning still runs; only the Jev ranking is skipped.
 
@@ -32,7 +39,7 @@ Nothing about how you use Claude Code changes: `/compact` and auto-compact behav
 | option | default | meaning |
 |---|---|---|
 | `targetPercent` | 45 | prune down to this share of the context window (estimated) |
-| `compactAtPercent` | 75 | context percentage at which a finished turn triggers compaction |
+| `compactAtPercent` | 75 | context percentage at which a finished turn triggers compaction (acted on by `jev-compact-trigger`, which reads this row) |
 | `preserveRecentMessages` | 12 | newest messages never touched |
 | `minReductionRatio` | 0.25 | below this reduction the built-in summary runs on the pruned set |
 | `model` | `jev-1.13.0` | pinned Jev model |
@@ -56,7 +63,7 @@ TYPESAFE_API_KEY=… npx -y tsx bench/run.mts messages.json [--no-jev] [--target
 
 ## Log
 
-`~/.local/state/jev/compact.log` — one line per compaction: reduction, what was pruned, Jev requests, and whether the built-in summary ran afterwards (`hybrid`).
+`~/.local/state/jev/compact.log` — one line per compaction: reduction, what was pruned, Jev requests, and whether the built-in summary ran afterwards (`hybrid`). The trigger adds `auto N% >= T% -> compacted | skipped (…) | failed: …`; `JEV_COMPACT_DEBUG=1` adds one line per turn with the context percentage. The engine's own view is in `~/.claude/debug/<session>.txt` (or `--debug-file`).
 
 ## Credits
 
